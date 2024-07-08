@@ -10,6 +10,11 @@ export type Field = {
     key: string
     label: string
     type: FieldType
+    owningField: boolean
+}
+
+export const DefaultField = {
+    owningField: false
 }
 
 export type TypeDefinition = {
@@ -21,4 +26,10 @@ export type TypeDefinition = {
     keyField: string
     listView: any
     icon: string
+    weak: boolean
+    owningType?: string
+}
+
+export const DefaultTypeDefinition = {
+    weak: false
 }
