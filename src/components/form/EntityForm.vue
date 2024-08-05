@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DateField, DateTimeField, NumberField, StringField } from '@/components/form';
+import { BinaryField, DateField, DateTimeField, NumberField, StringField } from '@/components/form';
 import { type Field, FieldType } from '@/types/entities'
 import type { PropType } from 'vue';
 const props = defineProps({
@@ -47,8 +47,18 @@ const updateField = (field: string, value: any) => {
                 :field="field"
                 :model-value="modelValue[field.key]"
                 @update:model-value="updateField(field.key, $event)" />
+            <BinaryField
+                v-else-if="field.type === FieldType.BINARY"
+                :field="field"
+                :model-value="modelValue[field.key]"
+                @update:model-value="updateField(field.key, $event)" />
             <v-col v-else>
-                {{ field.label }}: Unsupported type: {{ FieldType[field.type] }}
+                <v-input>
+                    <v-col>
+                        <v-label>{{ field.label }}</v-label>
+                        <v-container>Unsupported type: {{ FieldType[field.type] }}</v-container>
+                    </v-col>
+                </v-input>
             </v-col>
         </v-row>
     </v-container>

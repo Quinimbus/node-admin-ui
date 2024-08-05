@@ -68,12 +68,23 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
     }
 
     async create(entity: E): Promise<SaveResult> {
+        console.log("[create]", entity)
+        const form = new FormData();
+        let fileUpload = false;
+        Object.entries(entity).forEach(([key, value]) => {
+            if (value instanceof File) {
+                entity = { ...entity, [key]: null }
+                form.append(key, value)
+                fileUpload = true;
+            }
+        });
+        const entityBlob = new Blob([JSON.stringify(entity)], { type: 'application/json' });
+        if (fileUpload) {
+            form.append('entity', entityBlob);
+        }
         return await fetch(this.allPath, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(entity)
+            body: fileUpload ? form : entityBlob
         }).then(response => {
             if (response.ok) {
                 return new SaveResult(true, "saved")

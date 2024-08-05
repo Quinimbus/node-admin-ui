@@ -3,6 +3,7 @@ export enum FieldType {
     NUMBER,
     LOCALDATE,
     LOCALDATETIME,
+    BINARY,
     UNKNOWN
 }
 
