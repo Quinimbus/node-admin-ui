@@ -12,10 +12,12 @@ export type Field = {
     label: string
     type: FieldType
     owningField: boolean
+    hiddenInForm: boolean
 }
 
 export const DefaultField = {
-    owningField: false
+    owningField: false,
+    hiddenInForm: false
 }
 
 export type TypeDefinition = {

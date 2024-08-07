@@ -26,7 +26,7 @@ const updateField = (field: string, value: any) => {
 
 <template>
     <v-container>
-        <v-row v-for="field in fields" :key="field.key">
+        <v-row v-for="field in fields.filter(f => !f.hiddenInForm)" :key="field.key">
             <StringField
                 v-if="field.type === FieldType.STRING"
                 :field="field"
