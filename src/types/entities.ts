@@ -1,6 +1,7 @@
 export enum FieldType {
     STRING,
     NUMBER,
+    BOOLEAN,
     LOCALDATE,
     LOCALDATETIME,
     BINARY,

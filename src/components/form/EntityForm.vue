@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BinaryField, DateField, DateTimeField, NumberField, ReferenceField, StringField } from '@/components/form';
+import { BinaryField, BooleanField, DateField, DateTimeField, NumberField, ReferenceField, StringField } from '@/components/form';
 import { type Field, FieldType } from '@/types/entities'
 import type { PropType } from 'vue';
 const props = defineProps({
@@ -39,6 +39,11 @@ const updateField = (field: string, value: any) => {
                 @update:model-value="updateField(field.key, $event)" />
             <NumberField
                 v-else-if="field.type === FieldType.NUMBER"
+                :field="field"
+                :model-value="modelValue[field.key]"
+                @update:model-value="updateField(field.key, $event)" />
+            <BooleanField
+                v-else-if="field.type === FieldType.BOOLEAN"
                 :field="field"
                 :model-value="modelValue[field.key]"
                 @update:model-value="updateField(field.key, $event)" />
