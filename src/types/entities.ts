@@ -13,11 +13,13 @@ export type Field = {
     type: FieldType
     owningField: boolean
     hiddenInForm: boolean
+    references: string | null
 }
 
 export const DefaultField = {
     owningField: false,
-    hiddenInForm: false
+    hiddenInForm: false,
+    references: null
 }
 
 export type TypeDefinition = {

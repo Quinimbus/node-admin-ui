@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BinaryField, DateField, DateTimeField, NumberField, StringField } from '@/components/form';
+import { BinaryField, DateField, DateTimeField, NumberField, ReferenceField, StringField } from '@/components/form';
 import { type Field, FieldType } from '@/types/entities'
 import type { PropType } from 'vue';
 const props = defineProps({
@@ -28,7 +28,12 @@ const updateField = (field: string, value: any) => {
     <v-container>
         <v-row v-for="field in fields.filter(f => !f.hiddenInForm)" :key="field.key">
             <StringField
-                v-if="field.type === FieldType.STRING"
+                v-if="field.type === FieldType.STRING && !field.references"
+                :field="field"
+                :model-value="modelValue[field.key]"
+                @update:model-value="updateField(field.key, $event)" />
+            <ReferenceField
+                v-else-if="field.type === FieldType.STRING && field.references"
                 :field="field"
                 :model-value="modelValue[field.key]"
                 @update:model-value="updateField(field.key, $event)" />
