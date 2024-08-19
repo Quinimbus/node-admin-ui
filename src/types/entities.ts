@@ -4,8 +4,14 @@ export enum FieldType {
     BOOLEAN,
     LOCALDATE,
     LOCALDATETIME,
+    SELECTION,
     BINARY,
     UNKNOWN
+}
+
+export type AllowedValue = {
+    key: string
+    label: string
 }
 
 export type Field = {
@@ -15,12 +21,14 @@ export type Field = {
     owningField: boolean
     hiddenInForm: boolean
     references: string | null
+    allowedValues: AllowedValue[]
 }
 
 export const DefaultField = {
     owningField: false,
     hiddenInForm: false,
-    references: null
+    references: null,
+    allowedValues: []
 }
 
 export type TypeDefinition = {
