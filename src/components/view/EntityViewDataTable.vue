@@ -39,6 +39,9 @@ const deleteItem = (item: Entity) => {
 
 <template>
     <v-data-table :headers="headers" :items="items" :search="search">
+        <template v-for="(slotName, i) in (Object.keys($slots))" :key="i" #[slotName]="slotProps" >
+            <slot :name="slotName" v-bind="slotProps" />
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
             <v-icon
                 v-bind="props"

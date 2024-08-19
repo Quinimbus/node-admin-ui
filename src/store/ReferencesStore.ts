@@ -38,7 +38,11 @@ export const useReferencesStore = defineStore('references', () => {
         if (loadingState.value(key) === LoadingState.NOT_LOADED) {
             return reloadIdsAndLabelsFor(key);
         }
-        return idsAndLabels.value[key];
+        if (loadingState.value(key) === LoadingState.LOADING) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            return idsAndLabelsFor(key);
+        }
+        return Promise.resolve(idsAndLabels.value[key]);
     }
 
     return {

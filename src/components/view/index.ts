@@ -1,3 +1,6 @@
+export { default as BinaryTypeView } from './BinaryTypeView.vue'
+export { default as BooleanTypeView } from './BooleanTypeView.vue'
 export { default as EntityView } from './EntityView.vue'
 export { default as EntityViewDataTable } from './EntityViewDataTable.vue'
 export { default as EntityViewToolbar } from './EntityViewToolbar.vue'
+export { default as ReferenceTypeView } from './ReferenceTypeView.vue'

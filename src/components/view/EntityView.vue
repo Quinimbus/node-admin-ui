@@ -107,7 +107,11 @@ const showConfirmDialog = (title: string, message: string, okAction: () => void)
         <EntityViewDataTable
             :items="state.entries"
             :type="type"
-            @delete-item="deleteItem($event)" />
+            @delete-item="deleteItem($event)">
+            <template v-for="(slotName, i) in (Object.keys($slots))" :key="i" #[slotName]="slotProps" >
+                <slot :name="slotName" v-bind="slotProps" />
+            </template>
+        </EntityViewDataTable>
         <v-snackbar :color="state.saveSuccess ? 'green' : 'red'" v-model="state.showSnackbar" >
             {{ state.saveMessage }}
         </v-snackbar>
