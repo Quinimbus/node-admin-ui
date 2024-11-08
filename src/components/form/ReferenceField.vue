@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import FloatLabel from 'primevue/floatlabel';
+import Select from 'primevue/select';
 import { IdAndLabel } from '@/datasource';
 import { LoadingState, useReferencesStore } from '@/store';
 import { type Field } from '@/types/entities'
@@ -24,8 +26,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <v-col>
-        <v-autocomplete
+    <FloatLabel variant="in">
+        <!--<v-autocomplete
             clearable
             :label="field.label"
             :model-value="modelValue"
@@ -33,6 +35,17 @@ const emit = defineEmits<{
             :items="referenceItems"
             item-title="label"
             item-value="id"
+            @update:model-value="emit('update:model-value', $event)" />-->
+        <Select
+            :id="field.key"
+            fluid
+            :show-clear="true"
+            :model-value="modelValue"
+            :options="referenceItems"
+            option-label="label"
+            option-value="id"
+            :loading="referencesStore.loadingState(references) == LoadingState.LOADING"
             @update:model-value="emit('update:model-value', $event)" />
-    </v-col>
+        <label for="field.key">{{ field.label }}</label>
+    </FloatLabel>
 </template>

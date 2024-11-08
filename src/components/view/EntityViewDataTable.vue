@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { computed, ref, type PropType } from 'vue';
-import { type TypeDefinition } from '@/types/entities'
-import { toTableHeader } from '@/ui/UI';
+import { type PropType } from 'vue';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import { FieldType, type TypeDefinition } from '@/types/entities'
 import { Entity } from '@/datasource/Entity';
-import { entityViewState } from '@/state/EntityViewState';
-
-const props = defineProps({
+import BinaryTypeView from './BinaryTypeView.vue';
+import ReferenceTypeView from './ReferenceTypeView.vue';
+import BooleanTypeView from './BooleanTypeView.vue';
+import { useEntityViewStore } from '@/store';
+type DeleteItemClick = {
+    clickTarget: HTMLElement;
+    item: Entity
+}
+defineProps({
     type: {
         type: Object as PropType<TypeDefinition>,
         required: true
@@ -16,43 +24,51 @@ const props = defineProps({
     }
 })
 const emit = defineEmits<{
-    deleteItem: [modelValue: Entity]
+    deleteItem: [click: DeleteItemClick]
 }>()
-let search = ref("")
-const headers = computed(() => {
-    const h = props.type.fields
-        .map(toTableHeader)
-    h.push({
-        key: 'actions',
-        title: 'Aktionen',
-        sortable: false
-    })
-    return h
-})
+const entityViewStore = useEntityViewStore();
 const editItem = (item: Entity) => {
-    entityViewState.editItem(item)
+    entityViewStore.editItem(item)
 }
-const deleteItem = (item: Entity) => {
-    emit('deleteItem', item)
+const deleteItem = (click: DeleteItemClick) => {
+    emit('deleteItem', click)
 }
 </script>
 
 <template>
-    <v-data-table :headers="headers" :items="items" :search="search">
-        <template v-for="(slotName, i) in (Object.keys($slots))" :key="i" #[slotName]="slotProps" >
-            <slot :name="slotName" v-bind="slotProps" />
-        </template>
-        <template v-slot:[`item.actions`]="{ item }">
-            <v-icon
-                v-bind="props"
-                icon="mdi-pencil"
-                size="small"
-                class="me-2"
-                @click="editItem(item)" />
-            <v-icon
-                icon="mdi-delete"
-                size="small"
-                @click="deleteItem(item)" />
-        </template>
-    </v-data-table>
+    <DataTable :value="items">
+        <Column v-for="field in type.fields" :key="field.key" :field="field.key" :header="field.label">
+            <template #body="slotProps">
+                <span v-if="field.type === FieldType.BINARY">
+                    <BinaryTypeView :model-value="slotProps.data[field.key]" />
+                </span>
+                <span v-else-if="field.references">
+                    <ReferenceTypeView :model-value="slotProps.data[field.key]" :reference-type="field.references" /> 
+                </span>
+                <span v-else-if="field.type === FieldType.BOOLEAN">
+                    <BooleanTypeView :model-value="slotProps.data[field.key]" />
+                </span>
+                <span v-else>
+                    {{ slotProps.data[field.key] }}
+                </span>
+            </template>
+        </Column>
+        <Column>
+            <template #body="slotProps">
+                <div class="flex justify-center gap-4">
+                    <Button
+                        outlined
+                        icon="mdi mdi-pencil"
+                        aria-label="Edit"
+                        @click="editItem(slotProps.data)" />
+                    <Button
+                        outlined
+                        icon="mdi mdi-delete"
+                        aria-label="Delete"
+                        severity="danger"
+                        @click="deleteItem({clickTarget: $event.currentTarget as HTMLElement, item: slotProps.data})" />
+                </div>
+            </template>
+        </Column>
+    </DataTable>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type Field } from '@/types/entities'
+import Checkbox from 'primevue/checkbox';
 import type { PropType } from 'vue';
 defineProps({
     field: {
@@ -14,10 +15,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <v-col>
-        <v-checkbox
-            :label="field.label"
+    <div class="flex">
+        <Checkbox 
             :model-value="modelValue"
             @update:model-value="emit('update:model-value', $event)" />
-    </v-col>
+        <label :for="field.key">{{ field.label }}</label>
+    </div>
 </template>

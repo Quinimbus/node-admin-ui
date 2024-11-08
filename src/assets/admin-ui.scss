@@ -1,0 +1,22 @@
+@import 'tailwindcss/utilities';
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import './layout/layout.scss';
+
+.p-chip-icon.mdi {
+    line-height: 1;
+}
+
+.input-like {
+    @apply rounded-md border;
+    border-color: var(--p-inputtext-border-color);
+    padding: 21px 10.5px 0 10.5px;
+    position: relative;
+
+    label {
+        position: absolute;
+        color: var(--p-floatlabel-active-color);
+        top: 4px;
+        font-size: var(--p-floatlabel-active-font-size);
+    }
+}

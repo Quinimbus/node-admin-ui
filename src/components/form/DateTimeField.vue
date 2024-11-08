@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { type Field } from '@/types/entities'
-import type { PropType } from 'vue';
-defineProps({
+import DatePicker from 'primevue/datepicker';
+import FloatLabel from 'primevue/floatlabel';
+import { ref, type PropType } from 'vue';
+const props = defineProps({
     field: {
         type: Object as PropType<Field>,
         required: true
@@ -9,17 +11,25 @@ defineProps({
     modelValue: String
 })
 const emit = defineEmits<{
-    'update:model-value': [modelValue: string]
+    'update:model-value': [modelValue: string | null]
 }>()
+const date = ref(props.modelValue ? new Date(props.modelValue) : null);
+const updateDate = (newDate: Date | Date[] | (Date | null)[] | null | undefined) => {
+    if (newDate instanceof Date) {
+        emit('update:model-value', newDate.toISOString())
+        date.value = newDate
+    }
+}
 </script>
 
 <template>
-    <v-col>
-        <v-text-field
-            clearable
-            type="datetime-local"
-            :label="field.label"
-            :model-value="modelValue"
-            @update:model-value="emit('update:model-value', $event)" />
-    </v-col>
+    <FloatLabel variant="in">
+        <DatePicker
+            :id="field.key"
+            fluid
+            show-time
+            :model-value="date"
+            @update:model-value="updateDate" />
+        <label for="field.key">{{ field.label }}</label>
+    </FloatLabel>
 </template>

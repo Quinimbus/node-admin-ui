@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import { EmbeddableBinary } from '@/types';
-import { PropType } from 'vue';
+import { computed, PropType } from 'vue';
 import { filesize } from 'filesize';
+import Chip from 'primevue/chip';
 
-defineProps({
+const props = defineProps({
     modelValue: {
         type: Object as PropType<EmbeddableBinary>
+    }
+})
+const icon = computed(() => {
+    if (!props.modelValue) {
+        return "mdi mdi-file-hidden"
+    } else if (props.modelValue.contentType.startsWith('image')) {
+        return "mdi mdi-image"
+    } else {
+        return "mdi mdi-file"
     }
 })
 </script>
 
 <template>
-    <v-icon v-if="!modelValue" icon="mdi-file-hidden" />
-    <v-icon v-else-if="modelValue.contentType.startsWith('image')" icon="mdi-image" />
-    <v-icon v-else icon="mdi-file" />
-    <span v-if="modelValue" v-text="filesize(modelValue.size, {base: 2})" />
+    <Chip :icon="icon" :label="modelValue ? filesize(modelValue.size, {base: 2}) : undefined" />
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useReferencesStore } from '@/store';
+import Chip from 'primevue/chip';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -25,5 +26,5 @@ watch([() => props.modelValue, () => props.referenceType],
 </script>
 
 <template>
-    {{ referenceLabel }}
+    <Chip :label="referenceLabel" />
 </template>

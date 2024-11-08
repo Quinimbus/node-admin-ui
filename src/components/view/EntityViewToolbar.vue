@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, type PropType } from 'vue';
+import Toolbar from 'primevue/toolbar';
+import Button from 'primevue/button';
 import { EntityAddDialog } from '@/components/dialog';
 import { type TypeDefinition } from '@/types/entities'
 import { Entity } from '@/datasource';
-let search = ref("")
+//let search = ref("")
 defineProps({
     type: {
         type: Object as PropType<TypeDefinition>,
@@ -17,22 +19,29 @@ defineProps({
 const emit = defineEmits<{
     saveNew: [modelValue: Entity]
 }>()
+const addDialogOpen = ref(false);
 const saveItem = (item: Entity) => {
     emit('saveNew', item)
 }
 </script>
 
 <template>
-    <v-toolbar density="compact">
-        <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Suchen" single-line hide-details />
-        <v-spacer />
-        <EntityAddDialog
-            :entityFactory="entityFactory"
-            :type="type"
-            @save="saveItem($event)">
-            <template #activator="{ props }">
-                <v-btn v-bind="props" icon="mdi-plus" />
-            </template>
-        </EntityAddDialog>
-    </v-toolbar>
+    <Toolbar>
+        <template #start>
+            <EntityAddDialog
+                :entityFactory="entityFactory"
+                :type="type"
+                :open="addDialogOpen"
+                @save="saveItem($event)"
+                @update:open="addDialogOpen = $event" />
+            <Button
+                severity="secondary"
+                text
+                icon="mdi mdi-plus"
+                label="Create new"
+                aria-label="Create new"
+                title="Create new"
+                @click="addDialogOpen = true" />
+        </template>
+    </Toolbar>
 </template>

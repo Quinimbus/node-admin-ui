@@ -131,3 +131,4 @@ dist
 
 .vscode
 *.tgz
+components.d.ts

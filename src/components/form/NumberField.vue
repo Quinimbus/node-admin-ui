@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { type Field } from '@/types/entities'
-import type { PropType } from 'vue';
-defineProps({
+import FloatLabel from 'primevue/floatlabel';
+import InputNumber from 'primevue/inputnumber';
+import { ref, type PropType } from 'vue';
+const props = defineProps({
     field: {
         type: Object as PropType<Field>,
         required: true
@@ -11,18 +13,22 @@ defineProps({
 const emit = defineEmits<{
     'update:model-value': [modelValue: string]
 }>()
-const rules = {
-    number: (value: string) => /^\d+$/.test(value) || 'invalid number'
+const number = ref(props.modelValue ? parseInt(props.modelValue) : null);
+const updateNumber = (newNumber: number | null) => {
+    if (newNumber) {
+        emit('update:model-value', newNumber.toString())
+        number.value = newNumber
+    }
 }
 </script>
 
 <template>
-    <v-col>
-        <v-text-field
-            clearable
-            :rules="[rules.number]"
-            :label="field.label"
-            :model-value="modelValue"
-            @update:model-value="emit('update:model-value', $event)" />
-    </v-col>
+    <FloatLabel variant="in">
+        <InputNumber
+            :id="field.key"
+            fluid
+            :model-value="number"
+            @update:model-value="updateNumber" />
+        <label for="field.key">{{ field.label }}</label>
+    </FloatLabel>
 </template>

@@ -2,7 +2,9 @@
   "name": "@quinimbus/admin-ui",
   "version": "0.0.0",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/quinimbus-admin-ui.umd.cjs",
   "module": "./dist/quinimbus-admin-ui.js",
   "exports": {
@@ -23,21 +25,27 @@
     "dist": "npm run build && npm run test && npm pack"
   },
   "dependencies": {
+    "@primevue/themes": "4.1.1",
     "class-transformer": "0.5.1",
     "filesize": "10.1.4",
     "pinia": "2.2.1",
+    "primevue": "4.1.1",
     "vue": "3.4.37",
-    "vue-router": "4.4.3",
-    "vuetify": "3.6.14"
+    "vue-router": "4.4.3"
   },
   "devDependencies": {
     "@types/node": "22.2.0",
     "@vitejs/plugin-vue": "5.1.2",
-    "npm-check-updates": "17.0.6",
+    "autoprefixer": "10.4.20",
     "jest": "29.7.0",
+    "npm-check-updates": "17.0.6",
+    "postcss": "8.4.47",
+    "sass": "1.55.0",
+    "tailwindcss": "3.4.6",
+    "tailwindcss-primeui": "0.3.2",
     "ts-jest": "29.2.4",
     "ts-node": "10.9.2",
-    "typescript": "5.5.4",
+    "typescript": "5.6.3",
     "vite": "5.4.0",
     "vue-tsc": "2.0.29"
   }

@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import Chip from 'primevue/chip';
+
 defineProps({
     modelValue: Boolean
 })
 </script>
 
 <template>
-    <v-icon :icon="modelValue ? 'mdi-check' : 'mdi-close'"></v-icon>
+    <Chip :icon="modelValue ? 'mdi mdi-check' : 'mdi mdi-close'" />
 </template>

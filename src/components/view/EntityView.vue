@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { type PropType, ref } from 'vue';
+import Card from 'primevue/card';
 import { EntityViewDataTable, EntityViewToolbar } from '.';
 import { type EntityListDataSource } from '@/datasource/EntityListDataSource'
 import { type TypeDefinition } from '@/types/entities'
 import { Entity } from '@/datasource';
 import { EntityEditDialog } from '@/components/dialog';
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
 const props = defineProps({
     type: {
         type: Object as PropType<TypeDefinition>,
@@ -20,110 +23,93 @@ const props = defineProps({
     }
 })
 type State = {
-    entries: Entity[],
-    saveSuccess: boolean,
-    saveMessage: string,
-    showSnackbar: boolean,
-    showConfirmDialog: boolean,
-    confirmDialogTitle: string,
-    confirmDialogMessage: string,
-    confirmDialogOkAction: () => void
+    entries: Entity[]
 }
 const state = ref<State>({
-    entries: [],
-    saveSuccess: false,
-    saveMessage: "",
-    showSnackbar: false,
-    showConfirmDialog: false,
-    confirmDialogTitle: "",
-    confirmDialogMessage: "",
-    confirmDialogOkAction: () => {}})
+    entries: []})
 props.datasource.loadAll().then(e => state.value.entries = e)
+const confirm = useConfirm()
+const toast = useToast()
 const saveItem = (item: Object) => {
     props.datasource.save(item).then(e => {
         if (e.saved) {
-            state.value.saveSuccess = true
-            state.value.saveMessage = "Gespeichert"
+            toast.add({
+                severity: 'success',
+                summary: 'Saved',
+                detail: 'The element was successfully saved',
+                life: 3000})
         } else {
-            state.value.saveSuccess = false
-            state.value.saveMessage = "Fehler: " + e.message
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'The element could not be saved: ' + e.message,
+                life: 3000})
         }
-        state.value.showSnackbar = true
         props.datasource.loadAll().then(e => state.value.entries = e)
     })    
 }
 const saveNewItem = (item: Object) => {
     props.datasource.create(item).then(e => {
         if (e.saved) {
-            state.value.saveSuccess = true
-            state.value.saveMessage = "Gespeichert"
+            toast.add({
+                severity: 'success',
+                summary: 'Created',
+                detail: 'The element was successfully created',
+                life: 3000})
         } else {
-            state.value.saveSuccess = false
-            state.value.saveMessage = "Fehler: " + e.message
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'The element could not be created: ' + e.message,
+                life: 3000})
         }
-        state.value.showSnackbar = true
         props.datasource.loadAll().then(e => state.value.entries = e)
     })    
 }
-const deleteItem = (item: Entity) => {
-    showConfirmDialog(
-        "Löschen",
-        "Soll das Element wirklich gelöscht werden?",
-        () => {
+const deleteItem = (target: HTMLElement, item: Entity) => {
+    console.log("deleteItem", target, item)
+    confirm.require({
+        message: "Do you really want to remove this element?",
+        target: target,
+        accept: () => {
             props.datasource.delete(item).then(e => {
                 if (e.deleted) {
-                    state.value.saveSuccess = true
-                    state.value.saveMessage = "Gelöscht"
+                    toast.add({
+                        severity: 'success',
+                        summary: 'Removed',
+                        detail: 'The element was successfully removed',
+                        life: 3000})
                 } else {
-                    state.value.saveSuccess = false
-                    state.value.saveMessage = "Fehler: " + e.message
+                    toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'The element could not be removed: ' + e.message,
+                        life: 3000})
                 }
-                state.value.showSnackbar = true
                 props.datasource.loadAll().then(e => state.value.entries = e)
             })
-    })    
-}
-const showConfirmDialog = (title: string, message: string, okAction: () => void) => {
-    state.value.confirmDialogTitle = title
-    state.value.confirmDialogMessage = message
-    state.value.showConfirmDialog = true
-    state.value.confirmDialogOkAction = okAction
+        }
+    })
 }
 </script>
 
 <template>
-    <v-card>
-        <v-card-title>
+    <Card>
+        <template #title>
             {{ type.labelPlural }}
-            <v-spacer></v-spacer>
+        </template #title>
+        <template #content>
             <EntityViewToolbar
                 :entityFactory="entityFactory"
                 :type="type"
                 @save-new="saveNewItem($event)" />
-        </v-card-title>
-        <EntityEditDialog
-            :type="type"
-            @save="saveItem($event)" />
-        <EntityViewDataTable
-            :items="state.entries"
-            :type="type"
-            @delete-item="deleteItem($event)">
-            <template v-for="(slotName, i) in (Object.keys($slots))" :key="i" #[slotName]="slotProps" >
-                <slot :name="slotName" v-bind="slotProps" />
-            </template>
-        </EntityViewDataTable>
-        <v-snackbar :color="state.saveSuccess ? 'green' : 'red'" v-model="state.showSnackbar" >
-            {{ state.saveMessage }}
-        </v-snackbar>
-        <v-dialog v-model="state.showConfirmDialog" width="auto">
-            <v-card>
-                <v-card-title>{{ state.confirmDialogTitle }}</v-card-title>
-                <v-card-text>{{ state.confirmDialogMessage }}</v-card-text>
-                <v-card-actions>
-                    <v-btn @click="state.showConfirmDialog = false">Abbrechen</v-btn>
-                    <v-btn @click="state.confirmDialogOkAction(); state.showConfirmDialog = false">OK</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </v-card>
+            <EntityViewDataTable
+                :items="state.entries"
+                :type="type"
+                @delete-item="deleteItem($event.clickTarget, $event.item)" />
+            <EntityEditDialog
+                :type="type"
+                @save="saveItem($event)" />
+        </template>
+    </Card>
 </template>

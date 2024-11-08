@@ -3,7 +3,9 @@ import { type PropType, ref } from 'vue';
 import { type TypeDefinition } from '@/types/entities'
 import { EntityForm } from '@/components/form';
 import type { Entity } from '@/datasource/Entity';
-import { entityViewState } from '@/state/EntityViewState';
+import Dialog from 'primevue/dialog';
+import Button from 'primevue/button';
+import { useEntityViewStore } from '@/store';
 
 defineProps({
     type: {
@@ -15,42 +17,44 @@ const emit = defineEmits<{
     'update:model-value': [modelValue: string]
     save: [modelValue: Entity]
 }>()
-defineSlots<{
-    activator(props: Record<string, any>): any
-}>()
 const saving = ref(false)
+const entityViewStore = useEntityViewStore();
 const trySave = () => {
     saving.value = true
-    if (entityViewState.itemToEdit) {
-        emit('save', entityViewState.itemToEdit);
+    if (entityViewStore.itemToEdit) {
+        emit('save', entityViewStore.itemToEdit);
     }
-    entityViewState.stopEditing()
+    entityViewStore.stopEditing()
     saving.value = false
+}
+const close = () => {
+    console.log("close")
+    entityViewStore.stopEditing()
 }
 </script>
 
 <template>
-    <v-dialog v-model="entityViewState.editingItem" width="auto">
-        <template #activator="{ props }">
-            <slot name="activator" :props="props"></slot>
+    <Dialog
+        modal
+        class="w-96"
+        :draggable="false"
+        v-model:visible="entityViewStore.editingItem"
+        :header="'Edit ' + type.labelSingular"
+        @show="console.log('show')"
+        @hide="close">
+        <EntityForm
+            v-if="entityViewStore.itemToEdit"
+            :fields="type.fields"
+            :model-value="entityViewStore.itemToEdit" />
+        <template #footer>
+            <Button
+                label="Save"
+                :loading="saving"
+                @click="trySave" />
+            <Button
+                label="Cancel"
+                severity="secondary"
+                @click="close" />
         </template>
-        <v-card>
-            <v-card-title>{{ type.labelSingular }} bearbeiten</v-card-title>
-            <v-card-text>
-                <EntityForm
-                    v-if="entityViewState.itemToEdit"
-                    :fields="type.fields"
-                    :model-value="entityViewState.itemToEdit" />
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer />
-                <v-btn
-                    :loading="saving"
-                    @click="trySave">
-                    Speichern
-                </v-btn>
-                <v-btn>Abbrechen</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+    </Dialog>
 </template>

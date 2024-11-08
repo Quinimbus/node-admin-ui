@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type Field } from '@/types/entities'
 import type { PropType } from 'vue';
+import RadioButton from 'primevue/radiobutton';
 defineProps({
     field: {
         type: Object as PropType<Field>,
@@ -14,15 +15,14 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <v-col>
-        <v-radio-group
-            :label="field.label"
-            :model-value="modelValue"
-            @update:model-value="emit('update:model-value', $event)">
-            <v-radio
-                v-for="allowedValue in field.allowedValues"
+    <div class="flex flex-col flex-wrap gap-4">
+        <label>{{ field.label }}</label>
+        <div v-for="(allowedValue, index) in field.allowedValues" class="flex items-center">
+            <RadioButton
+                :id="field.key + '_' + index"
                 :value="allowedValue.key"
-                :label="allowedValue.label" />
-        </v-radio-group>
-    </v-col>
+                :model-value="modelValue" />
+            <label :for="field.key + '_' + index">{{ allowedValue.label }}</label>
+        </div>
+    </div>
 </template>
