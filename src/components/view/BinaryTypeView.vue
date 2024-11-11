@@ -12,7 +12,7 @@ const props = defineProps({
 const icon = computed(() => {
     if (!props.modelValue) {
         return "mdi mdi-file-hidden"
-    } else if (props.modelValue.contentType.startsWith('image')) {
+    } else if (props.modelValue.contentType?.startsWith('image')) {
         return "mdi mdi-image"
     } else {
         return "mdi mdi-file"
@@ -21,5 +21,5 @@ const icon = computed(() => {
 </script>
 
 <template>
-    <Chip :icon="icon" :label="modelValue ? filesize(modelValue.size, {base: 2}) : undefined" />
+    <Chip :icon="icon" :label="modelValue ? filesize(modelValue.size ?? 0, {base: 2}) : undefined" />
 </template>
