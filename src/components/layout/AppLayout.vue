@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useLayout } from './composables/layout';
 import { computed, PropType, ref, watch } from 'vue';
+import Toast from 'primevue/toast';
 import { AppFooter, AppSidebar, AppTopbar } from '.';
 import { TypeDefinition } from '@/types';
 
