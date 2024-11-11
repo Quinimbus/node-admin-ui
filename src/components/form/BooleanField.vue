@@ -12,13 +12,18 @@ defineProps({
 const emit = defineEmits<{
     'update:model-value': [modelValue: Boolean]
 }>()
+const updateValue = (value: boolean) => {
+    emit('update:model-value', value)
+}
 </script>
 
 <template>
-    <div class="flex">
-        <Checkbox 
+    <div class="flex items-center gap-2">
+        <Checkbox
+            :inputId="field.key"
+            binary
             :model-value="modelValue"
-            @update:model-value="emit('update:model-value', $event)" />
+            @update:model-value="updateValue" />
         <label :for="field.key">{{ field.label }}</label>
     </div>
 </template>
