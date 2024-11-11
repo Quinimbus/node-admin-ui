@@ -27,7 +27,10 @@ type State = {
 }
 const state = ref<State>({
     entries: []})
-props.datasource.loadAll().then(e => state.value.entries = e)
+const reload = () => {
+    props.datasource.loadAll().then(e => state.value.entries = e)
+}
+reload();
 const confirm = useConfirm()
 const toast = useToast()
 const saveItem = (item: Object) => {
@@ -45,7 +48,7 @@ const saveItem = (item: Object) => {
                 detail: 'The element could not be saved: ' + e.message,
                 life: 3000})
         }
-        props.datasource.loadAll().then(e => state.value.entries = e)
+        reload();
     })    
 }
 const saveNewItem = (item: Object) => {
@@ -63,7 +66,7 @@ const saveNewItem = (item: Object) => {
                 detail: 'The element could not be created: ' + e.message,
                 life: 3000})
         }
-        props.datasource.loadAll().then(e => state.value.entries = e)
+        reload();
     })    
 }
 const deleteItem = (target: HTMLElement, item: Entity) => {
@@ -86,7 +89,7 @@ const deleteItem = (target: HTMLElement, item: Entity) => {
                         detail: 'The element could not be removed: ' + e.message,
                         life: 3000})
                 }
-                props.datasource.loadAll().then(e => state.value.entries = e)
+                reload();
             })
         }
     })
@@ -102,7 +105,8 @@ const deleteItem = (target: HTMLElement, item: Entity) => {
             <EntityViewToolbar
                 :entityFactory="entityFactory"
                 :type="type"
-                @save-new="saveNewItem($event)" />
+                @save-new="saveNewItem($event)"
+                @refresh="reload" />
             <EntityViewDataTable
                 :items="state.entries"
                 :type="type"

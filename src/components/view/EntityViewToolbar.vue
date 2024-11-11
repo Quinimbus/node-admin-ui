@@ -17,11 +17,15 @@ defineProps({
     }
 })
 const emit = defineEmits<{
-    saveNew: [modelValue: Entity]
+    saveNew: [modelValue: Entity],
+    refresh : [];
 }>()
 const addDialogOpen = ref(false);
 const saveItem = (item: Entity) => {
     emit('saveNew', item)
+}
+const refresh = () => {
+    emit('refresh')
 }
 </script>
 
@@ -35,13 +39,21 @@ const saveItem = (item: Entity) => {
                 @save="saveItem($event)"
                 @update:open="addDialogOpen = $event" />
             <Button
-                severity="secondary"
+                severity="success"
                 text
                 icon="mdi mdi-plus"
                 label="Create new"
                 aria-label="Create new"
                 title="Create new"
                 @click="addDialogOpen = true" />
+            <Button
+                severity="secondary"
+                text
+                icon="mdi mdi-refresh"
+                label="Refresh"
+                aria-label="Refresh"
+                title="Refresh"
+                @click="refresh" />
         </template>
     </Toolbar>
 </template>
