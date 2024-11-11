@@ -52,12 +52,10 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
     }
 
     async save(entity: E): Promise<SaveResult> {
+        const body = this.prepareEntityBody(entity);
         return await fetch(this.existingPath(entity[this.keyField]), {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(entity)
+            body: body
         }).then(response => {
             if (response.ok) {
                 return new SaveResult(true, "saved")
@@ -68,26 +66,13 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
     }
 
     async create(entity: E): Promise<SaveResult> {
-        console.log("[create]", entity)
-        const form = new FormData();
-        let fileUpload = false;
-        Object.entries(entity).forEach(([key, value]) => {
-            if (value instanceof File) {
-                entity = { ...entity, [key]: null }
-                form.append(key, value)
-                fileUpload = true;
-            }
-        });
-        const entityBlob = new Blob([JSON.stringify(entity)], { type: 'application/json' });
-        if (fileUpload) {
-            form.append('entity', entityBlob);
-        }
+        const body = this.prepareEntityBody(entity);
         return await fetch(this.allPath, {
             method: 'POST',
-            body: fileUpload ? form : entityBlob
+            body: body
         }).then(response => {
             if (response.ok) {
-                return new SaveResult(true, "saved")
+                return new SaveResult(true, "created")
             } else {
                 return new SaveResult(false, "Got " + response.status + " from server")
             }
@@ -104,5 +89,22 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
                 return new DeleteResult(false, "Got " + response.status + " from server")
             }
         }).catch(error => new DeleteResult(false, 'Error: ' + error));
+    }
+
+    private prepareEntityBody(entity: E): FormData | Blob {
+        const form = new FormData();
+        let fileUpload = false;
+        Object.entries(entity).forEach(([key, value]) => {
+            if (value instanceof File) {
+                entity = { ...entity, [key]: null }
+                form.append(key, value)
+                fileUpload = true;
+            }
+        });
+        const entityBlob = new Blob([JSON.stringify(entity)], { type: 'application/json' });
+        if (fileUpload) {
+            form.append('entity', entityBlob);
+        }
+        return fileUpload ? form : entityBlob;
     }
 }
