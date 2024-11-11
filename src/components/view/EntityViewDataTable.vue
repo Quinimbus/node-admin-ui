@@ -36,7 +36,7 @@ const deleteItem = (click: DeleteItemClick) => {
 </script>
 
 <template>
-    <DataTable :value="items">
+    <DataTable :value="items" scrollable>
         <Column v-for="field in type.fields" :key="field.key" :field="field.key" :header="field.label">
             <template #body="slotProps">
                 <span v-if="field.type === FieldType.BINARY">
@@ -53,7 +53,7 @@ const deleteItem = (click: DeleteItemClick) => {
                 </span>
             </template>
         </Column>
-        <Column>
+        <Column frozen align-frozen="right" header="Actions">
             <template #body="slotProps">
                 <div class="flex justify-center gap-4">
                     <Button
