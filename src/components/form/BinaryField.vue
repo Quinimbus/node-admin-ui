@@ -2,6 +2,9 @@
 import { type Field, EmbeddableBinary } from '@/types'
 import { type PropType, computed } from 'vue';
 import FileImport from 'primevue/fileupload';
+import { Chip } from 'primevue';
+import { fileTypeIcon } from '@/ui/UI';
+import { filesize } from 'filesize';
 const props = defineProps({
     field: {
         type: Object as PropType<Field>,
@@ -28,15 +31,12 @@ const updateBinary = (files: File[]) => {
 </script>
 
 <template>
-    <div class="flex flex-col flex-wrap gap-4 input-like">
+    <div class="flex flex-col flex-wrap items-start gap-4 input-like">
         <label>{{ field.label }}</label>
-        <span class="text-subtitle-2" v-if="existingBinaryContentType && existingBinarySize">
-            Current:
-            <ul>
-                <li>Type: {{ existingBinaryContentType }}</li>
-                <li>{{ existingBinarySize }} bytes</li>
-            </ul>
-        </span>
+        <Chip
+            v-if="existingBinaryContentType && existingBinarySize"
+            :icon="'mdi ' + fileTypeIcon(existingBinaryContentType)"
+            :label="filesize(existingBinarySize ?? 0, {base: 2})" />
         <FileImport
             mode="basic"
             @select="updateBinary($event.files)" />

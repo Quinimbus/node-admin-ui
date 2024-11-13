@@ -3,21 +3,14 @@ import { EmbeddableBinary } from '@/types';
 import { computed, PropType } from 'vue';
 import { filesize } from 'filesize';
 import Chip from 'primevue/chip';
+import { fileTypeIcon } from '@/ui/UI';
 
 const props = defineProps({
     modelValue: {
         type: Object as PropType<EmbeddableBinary>
     }
 })
-const icon = computed(() => {
-    if (!props.modelValue) {
-        return "mdi mdi-file-hidden"
-    } else if (props.modelValue.contentType?.startsWith('image')) {
-        return "mdi mdi-image"
-    } else {
-        return "mdi mdi-file"
-    }
-})
+const icon = computed(() => "mdi " + fileTypeIcon(props.modelValue?.contentType));
 </script>
 
 <template>

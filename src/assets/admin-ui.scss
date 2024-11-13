@@ -10,7 +10,7 @@
 .input-like {
     @apply rounded-md border;
     border-color: var(--p-inputtext-border-color);
-    padding: 21px 10.5px 0 10.5px;
+    padding: 21px 10.5px 10.5px 10.5px;
     position: relative;
 
     label {

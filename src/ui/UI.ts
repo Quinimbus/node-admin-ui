@@ -1,13 +1,5 @@
-//import { VDataTable } from 'vuetify/components';
 import type { Field, TypeDefinition } from '../types/entities';
 import type { RouteRecordRaw } from 'vue-router';
-//type UnwrapReadonlyArrayType<A> = A extends Readonly<Array<infer I>> ? UnwrapReadonlyArrayType<I> : A
-//type DT = InstanceType<typeof VDataTable>;
-//type ReadonlyDataTableHeader = UnwrapReadonlyArrayType<DT['headers']>;
-
-//type ReadonlyHeaders = VDataTable['$props']['headers'];
-//type UnwrapReadonlyArray<A> = A extends Readonly<Array<infer I>> ? I : never;
-//type ReadonlyDataTableHeader = UnwrapReadonlyArray<ReadonlyHeaders>;
 
 export const toTableHeader = (f: Field)/*: ReadonlyDataTableHeader*/ => {
     return {
@@ -23,5 +15,43 @@ export const toRoute = (type: TypeDefinition): RouteRecordRaw => {
         path: '/' + type.keyPlural,
         name: type.labelPlural,
         component: type.listView
+    }
+}
+
+export const fileTypeIcon = (contentType: string | null | undefined) => {
+    switch (contentType) {
+        case null:
+        case undefined:
+            return 'mdi-file-hidden'
+        case 'application/pdf':
+            return 'mdi-file-pdf'
+        case 'application/msword':
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            return 'mdi-file-word'
+        case 'application/vnd.ms-excel':
+        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            return 'mdi-file-excel'
+        case 'application/vnd.ms-powerpoint':
+        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+            return 'mdi-file-powerpoint'
+        case 'application/zip':
+            return 'mdi-file-zip'
+        case 'text/plain':
+            return 'mdi-file-document'
+        case 'image/jpeg':
+        case 'image/png':
+        case 'image/gif':
+        case 'image/bmp':
+            return 'mdi-file-image'
+        case 'video/mp4':
+        case 'video/mpeg':
+        case 'video/quicktime':
+            return 'mdi-file-video'
+        case 'audio/mpeg':
+        case 'audio/ogg':
+        case 'audio/wav':
+            return 'mdi-file-music'
+        default:
+            return 'mdi-file'
     }
 }
