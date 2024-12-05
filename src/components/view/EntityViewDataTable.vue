@@ -6,6 +6,7 @@ import Button from 'primevue/button';
 import { FieldType, type TypeDefinition } from '@/types/entities'
 import { Entity } from '@/datasource/Entity';
 import BinaryTypeView from './BinaryTypeView.vue';
+import BinaryListTypeView from './BinaryListTypeView.vue';
 import ReferenceTypeView from './ReferenceTypeView.vue';
 import BooleanTypeView from './BooleanTypeView.vue';
 import { useEntityViewStore } from '@/store';
@@ -40,7 +41,10 @@ const deleteItem = (click: DeleteItemClick) => {
         <Column v-for="field in type.fields" :key="field.key" :field="field.key" :header="field.label">
             <template #body="slotProps">
                 <span v-if="field.type === FieldType.BINARY">
-                    <BinaryTypeView :model-value="slotProps.data[field.key]" />
+                    <BinaryTypeView :entity="slotProps.data" :field="field" :model-value="slotProps.data[field.key]" />
+                </span>
+                <span v-else-if="field.type === FieldType.LIST_BINARY">
+                    <BinaryListTypeView :entity="slotProps.data" :field="field" :model-value="slotProps.data[field.key]" />
                 </span>
                 <span v-else-if="field.references">
                     <ReferenceTypeView :model-value="slotProps.data[field.key]" :reference-type="field.references" /> 
@@ -55,7 +59,7 @@ const deleteItem = (click: DeleteItemClick) => {
         </Column>
         <Column frozen align-frozen="right" header="Actions">
             <template #body="slotProps">
-                <div class="flex justify-center gap-4">
+                <div class="flex justify-start gap-4">
                     <Button
                         outlined
                         icon="mdi mdi-pencil"

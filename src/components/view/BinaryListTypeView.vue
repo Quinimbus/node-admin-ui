@@ -17,23 +17,19 @@ const props = defineProps({
         required: true
     },
     modelValue: {
-        type: Object as PropType<EmbeddableBinary>
+        type: Object as PropType<EmbeddableBinary[]>
     }
 })
 const listDataSource = inject<EntityListDataSource<any>>(entityListDataSourceSym);
-const binarySize = computed(() => {
-    return (props.modelValue as EmbeddableBinary)?.size;
-})
-const icon = computed(() => "mdi " + fileTypeIcon(props.modelValue?.contentType));
-const binaryPath = computed(() => {
-    return listDataSource ? listDataSource.getDownloadUrl(props.entity, props.field.key) : '';
-})
+const icons = computed(() => props.modelValue?.map(b => "mdi " + fileTypeIcon(b.contentType)) || []);
+const binaryPath = (index: number) => listDataSource ? listDataSource.getListDownloadUrl(props.entity, props.field.key, index) : '';
 </script>
 
 <template>
-    <Chip :label="modelValue ? filesize(modelValue.size ?? 0, {base: 2}) : undefined">
-        <span :class="`p-chip-icon ${icon}`" data-pc-section="icon" />
-        <div class="p-chip-label" data-pc-section="label">{{ filesize(binarySize ?? 0, {base: 2}) }}</div>
-        <a class="p-chip-icon mdi mdi-download" :href="binaryPath" />
+    <Chip
+        v-for="(binary, index) in modelValue">
+        <span :class="`p-chip-icon ${icons[index]}`" data-pc-section="icon" />
+        <div class="p-chip-label" data-pc-section="label">{{ filesize(binary.size ?? 0, {base: 2}) }}</div>
+        <a class="p-chip-icon mdi mdi-download" :href="binaryPath(index)" />
     </Chip>
 </template>

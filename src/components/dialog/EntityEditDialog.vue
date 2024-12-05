@@ -45,6 +45,7 @@ const close = () => {
         <EntityForm
             v-if="entityViewStore.itemToEdit"
             :fields="type.fields"
+            :entity-id="entityViewStore.itemToEdit.id"
             :model-value="entityViewStore.itemToEdit" />
         <template #footer>
             <Button

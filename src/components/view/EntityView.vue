@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type PropType, ref } from 'vue';
+import { type PropType, provide, ref } from 'vue';
 import Card from 'primevue/card';
 import { EntityViewDataTable, EntityViewToolbar } from '.';
 import { type EntityListDataSource } from '@/datasource/EntityListDataSource'
@@ -8,6 +8,7 @@ import { Entity } from '@/datasource';
 import { EntityEditDialog } from '@/components/dialog';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
+import { entityListDataSourceSym } from '@/symbols';
 const props = defineProps({
     type: {
         type: Object as PropType<TypeDefinition>,
@@ -22,6 +23,7 @@ const props = defineProps({
         required: true
     }
 })
+provide(entityListDataSourceSym, props.datasource)
 type State = {
     entries: Entity[]
 }

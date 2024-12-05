@@ -7,6 +7,8 @@ export interface EntityListDataSource<E extends Entity> {
     save(entity: E): Promise<SaveResult>;
     create(entity: E): Promise<SaveResult>;
     delete(entity: E): Promise<DeleteResult>;
+    getDownloadUrl(entity: E, field: string): string
+    getListDownloadUrl(entity: E, field: string, index: number): string
 }
 
 export class SaveResult {
@@ -91,14 +93,31 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
         }).catch(error => new DeleteResult(false, 'Error: ' + error));
     }
 
+    getDownloadUrl(entity: E, field: string): string {
+        return `${this.existingPath(entity[this.keyField])}/${field}/download`;
+    }
+
+    getListDownloadUrl(entity: E, field: string, index: number): string {
+        return `${this.existingPath(entity[this.keyField])}/${field}/${index}/download`;
+    }
+
     private prepareEntityBody(entity: E): FormData | Blob {
         const form = new FormData();
         let fileUpload = false;
         Object.entries(entity).forEach(([key, value]) => {
             if (value instanceof File) {
-                entity = { ...entity, [key]: null }
+                entity = { ...entity, [key]: {multipartId: key} }
                 form.append(key, value)
                 fileUpload = true;
+            }
+            if (value instanceof Array) {
+                value.forEach((element, index) => {
+                    if (element instanceof File) {
+                        entity[key][index] = {multipartId: `${key}.${index}`}
+                        form.append(`${key}.${index}`, element)
+                        fileUpload = true;
+                    }
+                });
             }
         });
         const entityBlob = new Blob([JSON.stringify(entity)], { type: 'application/json' });

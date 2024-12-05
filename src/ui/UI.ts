@@ -19,7 +19,7 @@ export const toRoute = (type: TypeDefinition): RouteRecordRaw => {
 }
 
 export const fileTypeIcon = (contentType: string | null | undefined) => {
-    switch (contentType) {
+    switch (contentType?.substring(0, contentType.indexOf(';') || contentType.length)) {
         case null:
         case undefined:
             return 'mdi-file-hidden'
