@@ -1,0 +1,42 @@
+name: build-deploy-release
+
+on:
+  push:
+    tags:
+      - '\d+.\d+.\d+'
+
+permissions:
+    contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run dist
+
+      - name: Configure npm for private registry
+        run: |
+          echo "registry=https://npm-registry.quinimbus.cloud/" > .npmrc
+          echo "//npm-registry.quinimbus.cloud/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - name: Publish to custom npm registry
+        run: npm publish --registry=https://npm-registry.quinimbus.cloud
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            quinimbus-admin-ui-*.tgz
