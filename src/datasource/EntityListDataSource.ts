@@ -7,6 +7,7 @@ export interface EntityListDataSource<E extends Entity> {
     save(entity: E): Promise<SaveResult>;
     create(entity: E): Promise<SaveResult>;
     delete(entity: E): Promise<DeleteResult>;
+    callGlobalAction(action: string): Promise<ActionResult>;
     getDownloadUrl(entity: E, field: string): string
     getListDownloadUrl(entity: E, field: string, index: number): string
 }
@@ -27,6 +28,16 @@ export class DeleteResult {
 
     constructor(deleted: boolean, message: string) {
         this.deleted = deleted;
+        this.message = message;
+    }
+}
+
+export class ActionResult {
+    message: string;
+    success: boolean;
+
+    constructor(success: boolean, message: string) {
+        this.success = success;
         this.message = message;
     }
 }
@@ -91,6 +102,18 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
                 return new DeleteResult(false, "Got " + response.status + " from server")
             }
         }).catch(error => new DeleteResult(false, 'Error: ' + error));
+    }
+
+    async callGlobalAction(action: string): Promise<ActionResult> {
+        return await fetch(`${this.allPath}/action/${action}`, {
+            method: 'POST',
+        }).then(response => {
+            if (response.ok) {
+                return new ActionResult(true, "action called")
+            } else {
+                return new ActionResult(false, "Got " + response.status + " from server")
+            }
+        }).catch(error => new ActionResult(false, 'Error: ' + error));
     }
 
     getDownloadUrl(entity: E, field: string): string {

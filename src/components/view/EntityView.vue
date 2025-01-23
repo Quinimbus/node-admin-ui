@@ -96,6 +96,25 @@ const deleteItem = (target: HTMLElement, item: Entity) => {
         }
     })
 }
+const callGlobalAction = (action: string) => {
+    console.log("callGlobalAction", action)
+    props.datasource.callGlobalAction(action).then(e => {
+        if (e.success) {
+            toast.add({
+                severity: 'success',
+                summary: 'Action executed',
+                detail: 'The action was successfully executed',
+                life: 3000})
+        } else {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'The action could not be executed: ' + e.message,
+                life: 3000})
+        }
+        reload();
+    })
+}
 </script>
 
 <template>
@@ -108,7 +127,8 @@ const deleteItem = (target: HTMLElement, item: Entity) => {
                 :entityFactory="entityFactory"
                 :type="type"
                 @save-new="saveNewItem($event)"
-                @refresh="reload" />
+                @refresh="reload"
+                @call-global-action="callGlobalAction($event)" />
             <EntityViewDataTable
                 :items="state.entries"
                 :type="type"

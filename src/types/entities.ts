@@ -38,6 +38,12 @@ export const DefaultField = {
     allowedValues: []
 }
 
+export type Action = {
+    key: string
+    label: string
+    icon: string
+}
+
 export type TypeDefinition = {
     key: string
     keyPlural: string
@@ -49,6 +55,7 @@ export type TypeDefinition = {
     icon: string
     weak: boolean
     owningType?: string
+    globalActions: Action[]
 }
 
 export const DefaultTypeDefinition = {

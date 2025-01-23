@@ -18,7 +18,8 @@ defineProps({
 })
 const emit = defineEmits<{
     saveNew: [modelValue: Entity],
-    refresh : [];
+    refresh : [],
+    callGlobalAction: [action: string];
 }>()
 const addDialogOpen = ref(false);
 const saveItem = (item: Entity) => {
@@ -26,6 +27,9 @@ const saveItem = (item: Entity) => {
 }
 const refresh = () => {
     emit('refresh')
+}
+const callGlobalAction = (action: string) => {
+    emit('callGlobalAction', action)
 }
 </script>
 
@@ -54,6 +58,16 @@ const refresh = () => {
                 aria-label="Refresh"
                 title="Refresh"
                 @click="refresh" />
+            <Button
+                v-for="action in type.globalActions"
+                :key="action.key"
+                severity="secondary"
+                text
+                :icon="'mdi mdi-' + action.icon"
+                :label="action.label"
+                :aria-label="action.label"
+                :title="action.label"
+                @click="callGlobalAction(action.key)" />
         </template>
     </Toolbar>
 </template>
