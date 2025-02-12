@@ -28,7 +28,7 @@
     "@primevue/themes": "4.2.5",
     "class-transformer": "0.5.1",
     "filesize": "10.1.6",
-    "pinia": "2.3.1",
+    "pinia": "3.0.0",
     "primevue": "4.2.5",
     "vue": "3.5.13",
     "vue-router": "4.5.0"
