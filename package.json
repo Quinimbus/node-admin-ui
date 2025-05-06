@@ -34,7 +34,7 @@
     "vue-router": "4.5.0"
   },
   "devDependencies": {
-    "@types/node": "22.10.7",
+    "@types/node": "22.15.12",
     "@vitejs/plugin-vue": "5.2.1",
     "autoprefixer": "10.4.20",
     "jest": "29.7.0",
