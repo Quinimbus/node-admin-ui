@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useAppConfigStore } from '@/store';
+import { useAppConfigStore, useAuthStore } from '@/store';
 import { useLayout } from './composables/layout';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 
 const appConfigStore = useAppConfigStore();
+const authStore = useAuthStore();
 const appName = appConfigStore.name;
 </script>
 
@@ -35,11 +36,24 @@ const appName = appConfigStore.name;
                 <i class="pi pi-ellipsis-v"></i>
             </button>
 
-            <div class="layout-topbar-menu hidden lg:block">
+            <div
+                class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
-                    <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-user"></i>
-                        <span>Profile</span>
+                    <button
+                        v-if="authStore.isAuthenticated"
+                        type="button" 
+                        class="layout-topbar-action"
+                        @click="authStore.logout">
+                        <i class="pi pi-sign-out"></i>
+                        <span v-text="authStore.completeName"></span>
+                    </button>
+                    <button
+                        v-else-if="appConfigStore.oidcActive"
+                        type="button" 
+                        class="layout-topbar-action"
+                        @click="authStore.login">
+                        <i class="pi pi-sign-in"></i>
+                        <span>Login</span>
                     </button>
                 </div>
             </div>

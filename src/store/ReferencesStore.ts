@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { IdAndLabel, RestBasedReferencesDataSource } from '@/datasource';
 import { computed, ref } from 'vue';
-import { useAppConfigStore, useTypesStore } from '.';
+import { useAppConfigStore, useAuthStore, useTypesStore } from '.';
 
 export enum LoadingState {
     NOT_LOADED,
@@ -13,6 +13,7 @@ export enum LoadingState {
 export const useReferencesStore = defineStore('references', () => {
     const appConfigStore = useAppConfigStore();
     const typesStore = useTypesStore();
+    const auth = useAuthStore();
 
     const idsAndLabelsLoadingStates = ref(<{ [key: string]: LoadingState }>{});
     const idsAndLabels = ref(<{ [key: string]: IdAndLabel[] }>{});
@@ -23,7 +24,7 @@ export const useReferencesStore = defineStore('references', () => {
 
     const reloadIdsAndLabelsFor = async (key: string) => {
         idsAndLabelsLoadingStates.value[key] = LoadingState.LOADING;
-        const dataSource = new RestBasedReferencesDataSource(appConfigStore.basePath, typesStore.typeDefinitions[key]);
+        const dataSource = new RestBasedReferencesDataSource(appConfigStore.basePath, () => auth.token, typesStore.typeDefinitions[key]);
         return dataSource.loadAll().then((data) => {
             idsAndLabels.value[key] = data;
             idsAndLabelsLoadingStates.value[key] = LoadingState.LOADED;

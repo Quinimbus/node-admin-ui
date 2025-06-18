@@ -5,6 +5,7 @@ import Button from 'primevue/button';
 import { EntityAddDialog } from '@/components/dialog';
 import { type TypeDefinition } from '@/types/entities'
 import { Entity } from '@/datasource';
+import { useAuthStore } from '@/store';
 //let search = ref("")
 defineProps({
     type: {
@@ -21,6 +22,7 @@ const emit = defineEmits<{
     refresh : [],
     callGlobalAction: [action: string];
 }>()
+const auth = useAuthStore();
 const addDialogOpen = ref(false);
 const saveItem = (item: Entity) => {
     emit('saveNew', item)
@@ -49,6 +51,7 @@ const callGlobalAction = (action: string) => {
                 label="Create new"
                 aria-label="Create new"
                 title="Create new"
+                :disabled="!auth.fulfillsRequirement(type.requiredRoles.create)"
                 @click="addDialogOpen = true" />
             <Button
                 severity="secondary"

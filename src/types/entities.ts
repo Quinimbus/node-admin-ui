@@ -44,6 +44,11 @@ export type Action = {
     icon: string
 }
 
+export type RequiredRole = {
+    anonymous: boolean
+    roles: string[]
+}
+
 export type TypeDefinition = {
     key: string
     keyPlural: string
@@ -56,6 +61,12 @@ export type TypeDefinition = {
     weak: boolean
     owningType?: string
     globalActions: Action[]
+    requiredRoles: {
+        create: RequiredRole
+        read: RequiredRole
+        update: RequiredRole
+        delete: RequiredRole
+    }
 }
 
 export const DefaultTypeDefinition = {

@@ -17,7 +17,7 @@ export default defineConfig({
       fileName: "quinimbus-admin-ui"
     },
     rollupOptions: {
-      external: [/^primevue(\/.+)?$/, "pinia", "vue", "vue-router"],
+      external: [/^primevue(\/.+)?$/, "pinia", "vue", "vue-router", "vue3-oidc"],
       output: {
         globals: {
           vue: "Vue"

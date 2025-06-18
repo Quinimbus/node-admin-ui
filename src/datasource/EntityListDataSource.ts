@@ -49,17 +49,22 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
     existingPath: (id: string) => string
     key: string
     keyField: string
+    authToken: () => string | null
 
-    constructor(typeClass: new() => E, basepath: String, type: TypeDefinition) {
+    constructor(typeClass: new() => E, basepath: String, authToken: () => string | null, type: TypeDefinition) {
         this.typeClass = typeClass
         this.allPath = `${basepath}/${type.keyPlural}`
         this.existingPath = id => `${basepath}/${type.key}/${id}`
         this.key = type.key
         this.keyField = type.keyField
+        this.authToken = authToken;
     }
 
     async loadAll(): Promise<E[]> {
-        const response = await fetch(this.allPath)
+        const response = await fetch(this.allPath, {
+            method: 'GET',
+            headers: this.getHeaders()
+        })
         const body = await response.json() as any[]
         return plainToInstance(this.typeClass, body)
     }
@@ -68,6 +73,7 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
         const body = this.prepareEntityBody(entity);
         return await fetch(this.existingPath(entity[this.keyField]), {
             method: 'PUT',
+            headers: this.getHeaders(),
             body: body
         }).then(response => {
             if (response.ok) {
@@ -82,6 +88,7 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
         const body = this.prepareEntityBody(entity);
         return await fetch(this.allPath, {
             method: 'POST',
+            headers: this.getHeaders(),
             body: body
         }).then(response => {
             if (response.ok) {
@@ -95,6 +102,7 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
     async delete(entity: E): Promise<DeleteResult> {
         return await fetch(this.existingPath(entity[this.keyField]), {
             method: 'DELETE',
+            headers: this.getHeaders()
         }).then(response => {
             if (response.ok) {
                 return new DeleteResult(true, "deleted")
@@ -107,6 +115,7 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
     async callGlobalAction(action: string): Promise<ActionResult> {
         return await fetch(`${this.allPath}/action/${action}`, {
             method: 'POST',
+            headers: this.getHeaders()
         }).then(response => {
             if (response.ok) {
                 return new ActionResult(true, "action called")
@@ -148,5 +157,16 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
             form.append('entity', entityBlob);
         }
         return fileUpload ? form : entityBlob;
+    }
+
+    private getHeaders(): HeadersInit | undefined {
+        const token = this.authToken();
+        if (token) {
+            const headers: HeadersInit = {
+                'Authorization': `Bearer ${token}`,
+            };
+            return headers;
+        }
+        return undefined;
     }
 }

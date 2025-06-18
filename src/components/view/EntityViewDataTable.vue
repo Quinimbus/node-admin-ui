@@ -9,7 +9,7 @@ import BinaryTypeView from './BinaryTypeView.vue';
 import BinaryListTypeView from './BinaryListTypeView.vue';
 import ReferenceTypeView from './ReferenceTypeView.vue';
 import BooleanTypeView from './BooleanTypeView.vue';
-import { useEntityViewStore } from '@/store';
+import { useAuthStore, useEntityViewStore } from '@/store';
 type DeleteItemClick = {
     clickTarget: HTMLElement;
     item: Entity
@@ -28,6 +28,7 @@ const emit = defineEmits<{
     deleteItem: [click: DeleteItemClick]
 }>()
 const entityViewStore = useEntityViewStore();
+const auth = useAuthStore();
 const editItem = (item: Entity) => {
     entityViewStore.editItem(item)
 }
@@ -64,12 +65,14 @@ const deleteItem = (click: DeleteItemClick) => {
                         outlined
                         icon="mdi mdi-pencil"
                         aria-label="Edit"
+                        :disabled="!auth.fulfillsRequirement(type.requiredRoles.update)"
                         @click="editItem(slotProps.data)" />
                     <Button
                         outlined
                         icon="mdi mdi-delete"
                         aria-label="Delete"
                         severity="danger"
+                        :disabled="!auth.fulfillsRequirement(type.requiredRoles.delete)"
                         @click="deleteItem({clickTarget: $event.currentTarget as HTMLElement, item: slotProps.data})" />
                 </div>
             </template>

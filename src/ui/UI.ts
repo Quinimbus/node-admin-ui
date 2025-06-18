@@ -1,5 +1,29 @@
+import { useAuthStore } from '@/store';
 import type { Field, TypeDefinition } from '../types/entities';
-import type { RouteRecordRaw } from 'vue-router';
+import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
+
+declare module 'vue-router' {
+    interface RouteMeta {
+        requiredRoles?: {
+            create: {
+                anonymous: boolean;
+                roles: string[];
+            };
+            read: {
+                anonymous: boolean;
+                roles: string[];
+            };
+            update: {
+                anonymous: boolean;
+                roles: string[];
+            };
+            delete: {
+                anonymous: boolean;
+                roles: string[];
+            };
+        };
+    }
+}
 
 export const toTableHeader = (f: Field)/*: ReadonlyDataTableHeader*/ => {
     return {
@@ -14,8 +38,17 @@ export const toRoute = (type: TypeDefinition): RouteRecordRaw => {
     return {
         path: '/' + type.keyPlural,
         name: type.labelPlural,
-        component: type.listView
+        component: type.listView,
+        meta: {
+            requiredRoles: type.requiredRoles,
+        }
     }
+}
+
+export const guardRoutesByRoles = (to: RouteLocationNormalized, _from: RouteLocationNormalized) => {
+    const auth = useAuthStore();
+    const requirement = to.meta.requiredRoles?.read;
+    return auth.fulfillsRequirement(requirement ?? { anonymous: true, roles: [] }) ? true : {name: 'home'};
 }
 
 export const fileTypeIcon = (contentType: string | null | undefined) => {
