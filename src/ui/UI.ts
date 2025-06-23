@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/store';
 import type { Field, TypeDefinition } from '../types/entities';
 import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
+import { Dashboard, OIDCCallbackView } from '@/components/view';
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -42,6 +43,23 @@ export const toRoute = (type: TypeDefinition): RouteRecordRaw => {
         meta: {
             requiredRoles: type.requiredRoles,
         }
+    }
+}
+
+export const oidcCallbackRoute = (): RouteRecordRaw => {
+    return {
+        path: "/oidc-callback",
+        name: 'oidc-callback',
+        component: OIDCCallbackView,
+    }
+}
+
+export const dashboardRoute = (entityTypeDefinitions: TypeDefinition[]): RouteRecordRaw => {
+    return {
+        path: "",
+        name: 'dashboard',
+        component: Dashboard,
+        props: {entityTypeDefinitions: entityTypeDefinitions}
     }
 }
 
