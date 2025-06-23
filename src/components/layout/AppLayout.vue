@@ -9,6 +9,10 @@ const props = defineProps({
     entityTypeDefinitions: {
         type: Array as PropType<TypeDefinition[]>,
         required: true
+    },
+    groups: {
+        type: Object as PropType<{ [key: string]: { label: string } }>,
+        default: () => ({})
     }
 });
 
@@ -66,7 +70,7 @@ function isOutsideClicked(event: MouseEvent) {
 <template>
     <div class="layout-wrapper" :class="containerClass">
         <AppTopbar />
-        <AppSidebar :entity-type-definitions="props.entityTypeDefinitions" />
+        <AppSidebar :entity-type-definitions="props.entityTypeDefinitions" :groups="props.groups" />
         <div class="layout-main-container">
             <div class="layout-main">
                 <router-view></router-view>

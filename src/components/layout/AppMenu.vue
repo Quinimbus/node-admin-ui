@@ -10,6 +10,10 @@ const props = defineProps({
     entityTypeDefinitions: {
         type: Array as PropType<TypeDefinition[]>,
         required: true
+    },
+    groups: {
+        type: Object as PropType<{ [key: string]: { label: string } }>,
+        default: () => ({})
     }
 });
 
@@ -21,18 +25,24 @@ const model = ref([
         items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/', separator: false }],
         separator: false
     },
-    {
-        label: 'Entities',
-        items: props.entityTypeDefinitions
-            .filter(entityType => auth.fulfillsRequirement(entityType.requiredRoles.read))
-            .map(entityType => ({
+    ...props.entityTypeDefinitions
+        .filter(entityType => auth.fulfillsRequirement(entityType.requiredRoles.read))
+        .reduce((groups: { label: string; items: { label: string; icon: string; to: string; separator: boolean }[]; separator: boolean }[], entityType: TypeDefinition) => {
+            const groupKey = entityType.group || 'entities';
+            const groupLabel = props.groups[groupKey]?.label || groupKey;
+            let group = groups.find(g => g.label === groupLabel);
+            if (!group) {
+                group = { label: groupLabel, items: [], separator: false };
+                groups.push(group);
+            }
+            group.items.push({
                 label: entityType.labelPlural,
                 icon: 'mdi mdi-' + entityType.icon,
                 to: '/' + entityType.keyPlural,
                 separator: false
-            })),
-        separator: false
-    }
+            });
+            return groups;
+        }, []),
 ]);
 </script>
 

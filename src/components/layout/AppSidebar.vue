@@ -7,13 +7,17 @@ const props = defineProps({
     entityTypeDefinitions: {
         type: Array as PropType<TypeDefinition[]>,
         required: true
+    },
+    groups: {
+        type: Object as PropType<{ [key: string]: { label: string } }>,
+        default: () => ({})
     }
 });
 </script>
 
 <template>
     <div class="layout-sidebar">
-        <AppMenu :entity-type-definitions="props.entityTypeDefinitions" />
+        <AppMenu :entity-type-definitions="props.entityTypeDefinitions" :groups="props.groups" />
     </div>
 </template>
 

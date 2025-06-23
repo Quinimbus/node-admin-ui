@@ -67,6 +67,7 @@ export type TypeDefinition = {
     icon: string
     weak: boolean
     owningType?: string
+    group?: string
     globalActions: Action[]
     requiredRoles: {
         create: RequiredRole

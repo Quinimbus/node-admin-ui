@@ -54,12 +54,12 @@ export const oidcCallbackRoute = (): RouteRecordRaw => {
     }
 }
 
-export const dashboardRoute = (entityTypeDefinitions: TypeDefinition[]): RouteRecordRaw => {
+export const dashboardRoute = (entityTypeDefinitions: TypeDefinition[], groups: { [key: string]: { label: string } }): RouteRecordRaw => {
     return {
         path: "",
         name: 'dashboard',
         component: Dashboard,
-        props: {entityTypeDefinitions: entityTypeDefinitions}
+        props: {entityTypeDefinitions: entityTypeDefinitions, groups: groups}
     }
 }
 
