@@ -48,6 +48,7 @@ export type Action = {
     key: string
     label: string
     icon: string
+    requiredRoles: RequiredRole
 }
 
 export type RequiredRole = {

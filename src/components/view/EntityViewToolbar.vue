@@ -70,6 +70,7 @@ const callGlobalAction = (action: string) => {
                 :label="action.label"
                 :aria-label="action.label"
                 :title="action.label"
+                :disabled="!auth.fulfillsRequirement(action.requiredRoles)"
                 @click="callGlobalAction(action.key)" />
         </template>
     </Toolbar>
