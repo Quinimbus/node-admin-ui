@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { PropType } from 'vue';
 import { TypeDefinition } from '@/types';
 import { AppMenuItem } from '.';
+import { useAuthStore } from '@/store';
 
 const props = defineProps({
     entityTypeDefinitions: {
@@ -11,6 +12,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const auth = useAuthStore();
 
 const model = ref([
     {
@@ -20,12 +23,14 @@ const model = ref([
     },
     {
         label: 'Entities',
-        items: props.entityTypeDefinitions.map(entityType => ({
-            label: entityType.labelPlural,
-            icon: 'mdi mdi-' + entityType.icon,
-            to: '/' + entityType.keyPlural,
-            separator: false
-        })),
+        items: props.entityTypeDefinitions
+            .filter(entityType => auth.fulfillsRequirement(entityType.requiredRoles.read))
+            .map(entityType => ({
+                label: entityType.labelPlural,
+                icon: 'mdi mdi-' + entityType.icon,
+                to: '/' + entityType.keyPlural,
+                separator: false
+            })),
         separator: false
     }
 ]);
