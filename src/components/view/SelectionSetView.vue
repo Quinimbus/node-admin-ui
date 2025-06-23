@@ -4,8 +4,8 @@ import { computed, PropType } from 'vue';
 
 const props = defineProps({
     modelValue: {
-        type: Array as PropType<string[]>,
-        required: true
+        type: Array as PropType<string[] | null>,
+        default: []
     },
     allowedValues: {
         type: Array as PropType<{ key: string; label: string }[]>,
@@ -15,7 +15,7 @@ const props = defineProps({
 
 const labels = computed(() => {
     return props.modelValue
-        .map(value => props.allowedValues.find(av => av.key === value)?.label || value);
+        ?.map(value => props.allowedValues.find(av => av.key === value)?.label || value);
 });
 
 </script>
