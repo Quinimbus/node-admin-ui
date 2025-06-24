@@ -13,7 +13,7 @@ const appName = appConfigStore.name;
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
-                <i class="pi pi-bars"></i>
+                <i class="mdi mdi-menu"></i>
             </button>
             <router-link to="/" class="layout-topbar-logo">
                 <span class="text-4xl text-primary mdi mdi-table-edit" />
@@ -25,7 +25,7 @@ const appName = appConfigStore.name;
         <div class="layout-topbar-actions">
             <div class="layout-config-menu">
                 <button type="button" class="layout-topbar-action" @click="toggleDarkMode">
-                    <i :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]"></i>
+                    <i :class="['mdi', { 'mdi-weather-night': isDarkTheme, 'mdi-weather-sunny': !isDarkTheme }]"></i>
                 </button>
             </div>
 
@@ -33,7 +33,7 @@ const appName = appConfigStore.name;
                 class="layout-topbar-menu-button layout-topbar-action"
                 v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }"
             >
-                <i class="pi pi-ellipsis-v"></i>
+                <i class="mdi mdi-dots-vertical"></i>
             </button>
 
             <div
@@ -44,7 +44,7 @@ const appName = appConfigStore.name;
                         type="button" 
                         class="layout-topbar-action"
                         @click="authStore.logout">
-                        <i class="pi pi-sign-out"></i>
+                        <i class="mdi mdi-logout"></i>
                         <span v-text="authStore.completeName"></span>
                     </button>
                     <button
@@ -52,7 +52,7 @@ const appName = appConfigStore.name;
                         type="button" 
                         class="layout-topbar-action"
                         @click="authStore.login">
-                        <i class="pi pi-sign-in"></i>
+                        <i class="mdi mdi-login"></i>
                         <span>Login</span>
                     </button>
                 </div>
