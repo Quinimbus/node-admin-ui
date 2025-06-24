@@ -8,6 +8,7 @@ export interface EntityListDataSource<E extends Entity> {
     create(entity: E): Promise<SaveResult>;
     delete(entity: E): Promise<DeleteResult>;
     callGlobalAction(action: string): Promise<ActionResult>;
+    callInstanceAction(entity: E, action: string): Promise<ActionResult>;
     getDownloadUrl(entity: E, field: string): string
     getListDownloadUrl(entity: E, field: string, index: number): string
 }
@@ -114,6 +115,19 @@ export class RestBasedEntityListDataSource<E extends Entity> implements EntityLi
 
     async callGlobalAction(action: string): Promise<ActionResult> {
         return await fetch(`${this.allPath}/action/${action}`, {
+            method: 'POST',
+            headers: this.getHeaders()
+        }).then(response => {
+            if (response.ok) {
+                return new ActionResult(true, "action called")
+            } else {
+                return new ActionResult(false, "Got " + response.status + " from server")
+            }
+        }).catch(error => new ActionResult(false, 'Error: ' + error));
+    }
+
+    async callInstanceAction(entity: E, action: string): Promise<ActionResult> {
+        return await fetch(`${this.existingPath(entity[this.keyField])}/action/${action}`, {
             method: 'POST',
             headers: this.getHeaders()
         }).then(response => {

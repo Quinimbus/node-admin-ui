@@ -115,6 +115,25 @@ const callGlobalAction = (action: string) => {
         reload();
     })
 }
+const callInstanceAction = (item: Entity, action: string) => {
+    console.log("callInstanceAction", action, item)
+    props.datasource.callInstanceAction(item, action).then(e => {
+        if (e.success) {
+            toast.add({
+                severity: 'success',
+                summary: 'Action executed',
+                detail: 'The action was successfully executed',
+                life: 3000})
+        } else {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'The action could not be executed: ' + e.message,
+                life: 3000})
+        }
+        reload();
+    })
+}
 </script>
 
 <template>
@@ -132,7 +151,8 @@ const callGlobalAction = (action: string) => {
             <EntityViewDataTable
                 :items="state.entries"
                 :type="type"
-                @delete-item="deleteItem($event.clickTarget, $event.item)" />
+                @delete-item="deleteItem($event.clickTarget, $event.item)"
+                @call-instance-action="callInstanceAction($event.item, $event.action)" />
             <EntityEditDialog
                 :type="type"
                 @save="saveItem($event)" />

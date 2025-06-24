@@ -69,6 +69,7 @@ export type TypeDefinition = {
     owningType?: string
     group?: string
     globalActions: Action[]
+    instanceActions: Action[]
     requiredRoles: {
         create: RequiredRole
         read: RequiredRole

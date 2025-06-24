@@ -15,6 +15,10 @@ type DeleteItemClick = {
     clickTarget: HTMLElement;
     item: Entity
 }
+type InstanceActionClick = {
+    action: string;
+    item: Entity
+}
 defineProps({
     type: {
         type: Object as PropType<TypeDefinition>,
@@ -26,7 +30,8 @@ defineProps({
     }
 })
 const emit = defineEmits<{
-    deleteItem: [click: DeleteItemClick]
+    deleteItem: [click: DeleteItemClick],
+    callInstanceAction: [click: InstanceActionClick];
 }>()
 const entityViewStore = useEntityViewStore();
 const auth = useAuthStore();
@@ -35,6 +40,9 @@ const editItem = (item: Entity) => {
 }
 const deleteItem = (click: DeleteItemClick) => {
     emit('deleteItem', click)
+}
+const callInstanceAction = (click: InstanceActionClick) => {
+    emit('callInstanceAction', click)
 }
 </script>
 
@@ -78,6 +86,16 @@ const deleteItem = (click: DeleteItemClick) => {
                         severity="danger"
                         :disabled="!auth.fulfillsRequirement(type.requiredRoles.delete)"
                         @click="deleteItem({clickTarget: $event.currentTarget as HTMLElement, item: slotProps.data})" />
+                    <Button
+                        v-for="action in type.instanceActions"
+                        :key="action.key"
+                        severity="secondary"
+                        outlined
+                        :icon="'mdi mdi-' + action.icon"
+                        :aria-label="action.label"
+                        :title="action.label"
+                        :disabled="!auth.fulfillsRequirement(action.requiredRoles)"
+                        @click="callInstanceAction({action: action.key, item: slotProps.data})" />
                 </div>
             </template>
         </Column>
