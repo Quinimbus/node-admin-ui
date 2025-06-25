@@ -33,7 +33,7 @@ const binaryPath = computed(() => {
 <template>
     <Chip :label="modelValue ? filesize(modelValue.size ?? 0, {base: 2}) : undefined">
         <span :class="`p-chip-icon ${icon}`" data-pc-section="icon" />
-        <div class="p-chip-label" data-pc-section="label">{{ filesize(binarySize ?? 0, {base: 2}) }}</div>
+        <div class="p-chip-label whitespace-nowrap" data-pc-section="label">{{ filesize(binarySize ?? 0, {base: 2}) }}</div>
         <a class="p-chip-icon mdi mdi-download" :href="binaryPath" />
     </Chip>
 </template>

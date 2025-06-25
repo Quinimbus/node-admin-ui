@@ -29,7 +29,7 @@ const binaryPath = (index: number) => listDataSource ? listDataSource.getListDow
     <Chip
         v-for="(binary, index) in modelValue">
         <span :class="`p-chip-icon ${icons[index]}`" data-pc-section="icon" />
-        <div class="p-chip-label" data-pc-section="label">{{ filesize(binary.size ?? 0, {base: 2}) }}</div>
+        <div class="p-chip-label whitespace-nowrap" data-pc-section="label">{{ filesize(binary.size ?? 0, {base: 2}) }}</div>
         <a class="p-chip-icon mdi mdi-download" :href="binaryPath(index)" />
     </Chip>
 </template>
