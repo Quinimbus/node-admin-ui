@@ -65,7 +65,7 @@ const callInstanceAction = (click: InstanceActionClick) => {
                 <span v-else-if="field.type === FieldType.SET_SELECTION">
                     <SelectionSetView :model-value="slotProps.data[field.key]" :allowed-values="field.allowedValues" />
                 </span>
-                <span v-else>
+                <span class="text-ellipsis line-clamp-4" v-else>
                     {{ slotProps.data[field.key] }}
                 </span>
             </template>
