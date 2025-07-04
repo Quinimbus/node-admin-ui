@@ -10,6 +10,7 @@ import BinaryListTypeView from './BinaryListTypeView.vue';
 import ReferenceTypeView from './ReferenceTypeView.vue';
 import BooleanTypeView from './BooleanTypeView.vue';
 import SelectionSetView from './SelectionSetView.vue';
+import StringSetView from './StringSetView.vue';
 import { useAuthStore, useEntityViewStore } from '@/store';
 type DeleteItemClick = {
     clickTarget: HTMLElement;
@@ -64,6 +65,9 @@ const callInstanceAction = (click: InstanceActionClick) => {
                 </span>
                 <span v-else-if="field.type === FieldType.SET_SELECTION">
                     <SelectionSetView :model-value="slotProps.data[field.key]" :allowed-values="field.allowedValues" />
+                </span>
+                <span v-else-if="field.type === FieldType.SET_STRING">
+                    <StringSetView :model-value="slotProps.data[field.key]" />
                 </span>
                 <span class="text-ellipsis line-clamp-4" v-else>
                     {{ slotProps.data[field.key] }}
