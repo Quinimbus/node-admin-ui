@@ -27,7 +27,9 @@
   "dependencies": {
     "@primevue/themes": "4.3.6",
     "class-transformer": "0.5.1",
-    "filesize": "10.1.6",
+    "filesize": "10.1.6"
+  },
+  "peerDependencies": {
     "pinia": "3.0.2",
     "primevue": "4.3.5",
     "vue": "3.5.17",
