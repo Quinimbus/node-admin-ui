@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { computed } from "vue";
-import { useAuth, useOidcStore } from 'vue3-oidc'
+import { computed, ref, unref, watch } from "vue";
+import { useAuth, useOidcStore, User } from 'vue3-oidc'
 
 export const useAuthStore = defineStore('auth', () => {
     const {
@@ -11,24 +11,38 @@ export const useAuthStore = defineStore('auth', () => {
 
     const { state } = useOidcStore();
 
-    const user = computed(() => state.value?.user ?? null);
-    const token = computed(() => state.value?.token ?? null);
+    let lastUsermanager: any | null = null;
 
-    const givenName = computed(() => user?.value?.profile?.given_name ?? '');
-    const familyName = computed(() => user?.value?.profile?.family_name ?? '');
+    const user = ref(unref(state).user);
+    const setUser = (newUser: User | null) => {
+        user.value = newUser;
+    };
+
+    watch(state, state => {
+        if (state.userManager != lastUsermanager) {
+            state.userManager?.getUser().then(setUser);
+            state.userManager?.events.addUserLoaded(setUser);
+            lastUsermanager = state.userManager;
+        }
+    }, { deep: true, immediate: true });
+
+    const token = computed(() => unref(user)?.access_token ?? '');
+
+    const givenName = computed(() => unref(user)?.profile?.given_name ?? '');
+    const familyName = computed(() => unref(user)?.profile?.family_name ?? '');
     const completeName = computed(() => {
         const given = givenName.value;
         const family = familyName.value;
         return given && family ? `${given} ${family}` : (given || family);
     });
-    const roles = computed(() => user.value?.profile.roles as string[] ?? []);
-    const tokenExpiry = computed(() => user.value?.expires_at ?? 0);
+    const roles = computed(() => unref(user)?.profile.roles as string[] ?? []);
+    const tokenExpiry = computed(() => unref(user)?.expires_at ?? 0);
 
     async function login() { await signinRedirect() }
     async function logout() { await signoutRedirect() }
     async function refresh() { refreshToken() }
 
-    const isAuthenticated = computed(() => !!user.value);
+    const isAuthenticated = computed(() => !!unref(user));
 
     const fulfillsRequirement = (requirement: { anonymous: boolean, roles: string[] }) => {
         if (requirement.anonymous) {
@@ -54,6 +68,6 @@ export const useAuthStore = defineStore('auth', () => {
         fulfillsRequirement,
         login,
         logout,
-        refresh,
+        refresh
     }
 });
