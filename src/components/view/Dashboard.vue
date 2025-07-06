@@ -55,7 +55,9 @@ const visibleEntityTypes = computed(() => {
                     <i :class="'text-8xl float-left mr-2 mdi mdi-' + entityType.icon"></i>
                     <h2 class="p-card-title">{{ entityType.labelPlural }}</h2>
                     <p>
-                        <a :href="'/' + entityType.keyPlural"><i class="mdi mdi-table"></i> Manage {{ entityType.labelPlural }}</a>
+                        <router-link :to="'/' + entityType.keyPlural">
+                            <i class="mdi mdi-table"></i> Manage {{ entityType.labelPlural }}
+                        </router-link>
                     </p>
                 </template>
             </Card>
