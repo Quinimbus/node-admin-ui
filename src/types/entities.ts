@@ -31,6 +31,7 @@ export type Field = {
     key: string
     label: string
     type: FieldType
+    group?: string
     owningField: boolean
     hiddenInForm: boolean
     references: string | null
@@ -68,6 +69,7 @@ export type TypeDefinition = {
     weak: boolean
     owningType?: string
     group?: string
+    fieldGroups: Map<string, { label: string }>
     globalActions: Action[]
     instanceActions: Action[]
     requiredRoles: {

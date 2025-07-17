@@ -36,15 +36,17 @@ const close = () => {
 <template>
     <Dialog
         modal
-        class="w-96"
+        :class="type.fieldGroups.size > 0 ? 'w-128' : 'w-96'"
         :draggable="false"
         v-model:visible="entityViewStore.editingItem"
         :header="'Edit ' + type.labelSingular"
         @show="console.log('show')"
+        position="top"
         @hide="close">
         <EntityForm
             v-if="entityViewStore.itemToEdit"
             :fields="type.fields"
+            :groups="type.fieldGroups"
             :entity-id="entityViewStore.itemToEdit.id"
             :model-value="entityViewStore.itemToEdit" />
         <template #footer>

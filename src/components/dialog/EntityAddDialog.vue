@@ -52,13 +52,15 @@ watch(() => props.open, (newVal, oldVal) => {
 <template>
     <Dialog
         modal
-        class="w-96"
+        :class="type.fieldGroups.size > 0 ? 'w-128' : 'w-96'"
         :draggable="false"
         v-model:visible="open"
         :header="'Create new ' + type.labelSingular"
+        position="top"
         @hide="close">
         <EntityForm
             :fields="type.fields"
+            :groups="type.fieldGroups"
             :model-value="entity" />
         <template #footer>
             <Button
