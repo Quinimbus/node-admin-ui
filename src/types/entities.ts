@@ -27,6 +27,17 @@ export type AllowedValue = {
     label: string
 }
 
+export enum FieldTableColumnVisibility {
+    ALWAYS,
+    NEVER,
+    DEFAULT_VISIBLE,
+    DEFAULT_HIDDEN
+}
+
+export type FieldTableConfig = {
+    visibility: FieldTableColumnVisibility
+}
+
 export type Field = {
     key: string
     label: string
@@ -36,13 +47,17 @@ export type Field = {
     hiddenInForm: boolean
     references: string | null
     allowedValues: AllowedValue[]
+    table: FieldTableConfig
 }
 
 export const DefaultField = {
     owningField: false,
     hiddenInForm: false,
     references: null,
-    allowedValues: []
+    allowedValues: [],
+    table: {
+        visibility: FieldTableColumnVisibility.ALWAYS
+    }
 }
 
 export type Action = {

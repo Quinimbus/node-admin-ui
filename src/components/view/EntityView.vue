@@ -29,6 +29,7 @@ type State = {
 }
 const state = ref<State>({
     entries: []})
+const selectedColumns = ref<string[]>([]);
 const reload = () => {
     props.datasource.loadAll().then(e => state.value.entries = e)
 }
@@ -147,10 +148,12 @@ const callInstanceAction = (item: Entity, action: string) => {
                 :type="type"
                 @save-new="saveNewItem($event)"
                 @refresh="reload"
-                @call-global-action="callGlobalAction($event)" />
+                @call-global-action="callGlobalAction($event)"
+                @columns-selected="selectedColumns = $event" />
             <EntityViewDataTable
                 :items="state.entries"
                 :type="type"
+                :selected-optional-columns="selectedColumns"
                 @delete-item="deleteItem($event.clickTarget, $event.item)"
                 @call-instance-action="callInstanceAction($event.item, $event.action)" />
             <EntityEditDialog
