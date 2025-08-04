@@ -48,6 +48,7 @@ export type Field = {
     references: string | null
     allowedValues: AllowedValue[]
     table: FieldTableConfig
+    multilineText: boolean
 }
 
 export const DefaultField = {
@@ -57,7 +58,8 @@ export const DefaultField = {
     allowedValues: [],
     table: {
         visibility: FieldTableColumnVisibility.ALWAYS
-    }
+    },
+    multilineText: false
 }
 
 export type Action = {
