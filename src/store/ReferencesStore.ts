@@ -46,11 +46,17 @@ export const useReferencesStore = defineStore('references', () => {
         return Promise.resolve(idsAndLabels.value[key]);
     }
 
+    const invalidateFor = async (key: string) => {
+        delete idsAndLabels.value[key];
+        delete idsAndLabelsLoadingStates.value[key];
+    }
+
     return {
         idsAndLabelsLoadingStates,
         idsAndLabels,
         loadingState,
         reloadIdsAndLabelsFor,
-        idsAndLabelsFor
+        idsAndLabelsFor,
+        invalidateFor
     }
 });

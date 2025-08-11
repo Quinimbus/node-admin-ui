@@ -9,6 +9,7 @@ import { EntityEditDialog } from '@/components/dialog';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { entityListDataSourceSym } from '@/symbols';
+import { useReferencesStore } from '@/store';
 const props = defineProps({
     type: {
         type: Object as PropType<TypeDefinition>,
@@ -36,6 +37,7 @@ const reload = () => {
 reload();
 const confirm = useConfirm()
 const toast = useToast()
+const referencesStore = useReferencesStore()
 const saveItem = (item: Object) => {
     props.datasource.save(item).then(e => {
         if (e.saved) {
@@ -52,6 +54,7 @@ const saveItem = (item: Object) => {
                 life: 3000})
         }
         reload();
+        referencesStore.invalidateFor(props.type.key);
     })    
 }
 const saveNewItem = (item: Object) => {
@@ -70,6 +73,7 @@ const saveNewItem = (item: Object) => {
                 life: 3000})
         }
         reload();
+        referencesStore.invalidateFor(props.type.key);
     })    
 }
 const deleteItem = (target: HTMLElement, item: Entity) => {
