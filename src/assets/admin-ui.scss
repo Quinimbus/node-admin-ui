@@ -1,7 +1,8 @@
-@import 'tailwindcss/utilities';
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import './layout/layout.scss';
+@use './layout/layout.scss' as *;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .p-chip-icon.mdi {
     line-height: 1;
