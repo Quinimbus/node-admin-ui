@@ -37,7 +37,7 @@
     "vue3-oidc": "1.0.2"
   },
   "devDependencies": {
-    "@types/node": "22.15.18",
+    "@types/node": "24.5.1",
     "@vitejs/plugin-vue": "6.0.1",
     "autoprefixer": "10.4.21",
     "jest": "30.1.3",
