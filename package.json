@@ -13,7 +13,7 @@
       "require": "./dist/quinimbus-admin-ui.umd.cjs",
       "types": "./dist/index.d.ts"
     },
-    "./style.css": "./dist/style.css"
+    "./quinimbus-admin-ui.css": "./dist/quinimbus-admin-ui.css"
   },
   "types": "./dist/index.d.ts",
   "scripts": {
