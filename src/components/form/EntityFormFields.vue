@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BinaryField, BinaryListField, BooleanField, DateField, DateTimeField, NumberField, ReferenceField, SelectionField, SelectionSetField, StringField, StringSetField } from '@/components/form';
+import { BinaryField, BinaryListField, BooleanField, DateField, DateTimeField, NumberField, ReferenceField, ReferenceSetField, SelectionField, SelectionSetField, StringField, StringSetField } from '@/components/form';
 import { Entity } from '@/datasource';
 import { type Field, FieldType } from '@/types/entities'
 import type { PropType } from 'vue';
@@ -80,7 +80,12 @@ const updateField = (field: string, value: any) => {
                 :model-value="props.modelValue[field.key]"
                 @update:model-value="updateField(field.key, $event)" />
             <StringSetField
-                v-else-if="field.type === FieldType.SET_STRING"
+                v-else-if="field.type === FieldType.SET_STRING && !field.references"
+                :field="field"
+                :model-value="props.modelValue[field.key]"
+                @update:model-value="updateField(field.key, $event)" />
+            <ReferenceSetField
+                v-else-if="field.type === FieldType.SET_STRING && field.references"
                 :field="field"
                 :model-value="props.modelValue[field.key]"
                 @update:model-value="updateField(field.key, $event)" />

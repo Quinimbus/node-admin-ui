@@ -8,6 +8,7 @@ import { Entity } from '@/datasource/Entity';
 import BinaryTypeView from './BinaryTypeView.vue';
 import BinaryListTypeView from './BinaryListTypeView.vue';
 import ReferenceTypeView from './ReferenceTypeView.vue';
+import ReferenceTypeSetView from './ReferenceTypeSetView.vue';
 import BooleanTypeView from './BooleanTypeView.vue';
 import SelectionSetView from './SelectionSetView.vue';
 import SelectionView from './SelectionView.vue';
@@ -65,7 +66,7 @@ const selectedFieldColumns = computed(() => {
                 <span v-else-if="field.type === FieldType.LIST_BINARY">
                     <BinaryListTypeView :entity="slotProps.data" :field="field" :model-value="slotProps.data[field.key]" />
                 </span>
-                <span v-else-if="field.references">
+                <span v-else-if="field.type === FieldType.STRING && field.references">
                     <ReferenceTypeView :model-value="slotProps.data[field.key]" :reference-type="field.references" /> 
                 </span>
                 <span v-else-if="field.type === FieldType.BOOLEAN">
@@ -77,8 +78,11 @@ const selectedFieldColumns = computed(() => {
                 <span v-else-if="field.type === FieldType.SET_SELECTION">
                     <SelectionSetView :model-value="slotProps.data[field.key]" :allowed-values="field.allowedValues" />
                 </span>
-                <span v-else-if="field.type === FieldType.SET_STRING">
+                <span v-else-if="field.type === FieldType.SET_STRING && !field.references">
                     <StringSetView :model-value="slotProps.data[field.key]" />
+                </span>
+                <span v-else-if="field.type === FieldType.SET_STRING && field.references">
+                    <ReferenceTypeSetView :model-value="slotProps.data[field.key]" :reference-type="field.references" />
                 </span>
                 <span class="text-ellipsis line-clamp-4" v-else>
                     {{ slotProps.data[field.key] }}
